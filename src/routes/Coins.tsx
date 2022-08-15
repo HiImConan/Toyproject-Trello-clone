@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { theme } from "../theme";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { fetchCoins } from "../api";
+import { useQuery } from "@tanstack/react-query";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -27,7 +28,8 @@ const Coin = styled.li`
   a {
     padding: 20px;
     transition: color 0.2s ease-in;
-    display: block;
+    display: flex;
+    align-items: center;
   }
   &:hover {
     a {
@@ -46,7 +48,13 @@ const Loader = styled.span`
   display: block;
 `;
 
-interface CoinInterface {
+const Img = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+`;
+
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -57,29 +65,24 @@ interface CoinInterface {
 }
 
 const Coins = () => {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getCoins = async () => {
-      const res = await axios.get("https://api.coinpaprika.com/v1/coins");
-      setCoins(res.data.slice(0, 100));
-      setLoading(false);
-    };
-    getCoins();
-  }, []);
+  const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      {loading ? (
+      {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
-          {coins.map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+              <Link to={`/${coin.id}`} state={coin.name}>
+                <Img
+                  src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
+                />
+                {coin.name} &rarr;
+              </Link>
             </Coin>
           ))}
         </CoinsList>
