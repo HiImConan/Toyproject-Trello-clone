@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { theme } from "../theme";
 import { Link } from "react-router-dom";
 import { fetchCoins } from "../api";
 import { useQuery } from "@tanstack/react-query";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -65,11 +66,14 @@ interface ICoin {
 }
 
 const Coins = () => {
+  const setIsDark = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setIsDark((prev) => !prev);
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins);
   return (
     <Container>
       <Header>
         <Title>코인</Title>
+        <button onClick={toggleDarkAtom}>Toggle Mode</button>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

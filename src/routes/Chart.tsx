@@ -3,6 +3,8 @@ import { useOutletContext } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 interface ChartProps {
   coinId: string;
@@ -20,8 +22,9 @@ interface IHistorical {
 }
 
 const Chart = () => {
-  const { coinId } = useOutletContext<ChartProps>();
+  const isDark = useRecoilValue(isDarkAtom);
 
+  const { coinId } = useOutletContext<ChartProps>();
   const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
     fetchCoinHistory(coinId)
   );
@@ -41,7 +44,7 @@ const Chart = () => {
           ]}
           options={{
             theme: {
-              mode: "dark",
+              mode: isDark ? "dark" : "light",
             },
             chart: {
               height: 300,
@@ -57,7 +60,7 @@ const Chart = () => {
             xaxis: {
               labels: {
                 show: false,
-                datetimeFormatter: {month: "mmm 'yy"}
+                datetimeFormatter: { month: "mmm 'yy" },
               },
               axisTicks: {
                 show: false,
@@ -66,9 +69,7 @@ const Chart = () => {
                 show: false,
               },
               type: "datetime",
-              categories: 
-                data?.map(price => price.time_close)
-              
+              categories: data?.map((price) => price.time_close),
             },
             grid: { show: false },
             stroke: {
@@ -78,13 +79,12 @@ const Chart = () => {
               type: "gradient",
               gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
             },
-            colors: ["#0fbcf9"] ,
+            colors: ["#0fbcf9"],
             tooltip: {
               y: {
-                formatter: (value) => `$${value.toFixed(3)}`
+                formatter: (value) => `$${value.toFixed(3)}`,
               },
-              
-            }
+            },
           }}
         />
       )}
