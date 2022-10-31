@@ -1,16 +1,17 @@
 import React from "react";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./atom";
-import DraggableCard from "./components/DraggableCard";
 import Board from "./components/Board";
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 680px;
+  flex-direction: column;
+  max-width: 1000px;
   width: 100%;
   margin: 0 auto;
+  gap: 30px;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -23,11 +24,17 @@ const Boards = styled.div`
   grid-template-columns: repeat(3, 1fr);
 `;
 
+const DeleteSection = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
+
 const App = () => {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => {
     console.log(info);
-    const { destination, draggableId, source } = info;
+    const { destination, source } = info;
     if (!destination) return;
     if (destination?.droppableId === source.droppableId) {
       // same board movement
@@ -42,7 +49,17 @@ const App = () => {
         };
       });
     }
-    if (destination.droppableId !== source.droppableId) {
+    if (destination.droppableId === "delete") {
+      // cross board movement
+      setToDos((allBoards) => {
+        const sourceBoard = [...allBoards[source.droppableId]];
+        sourceBoard.splice(source.index, 1);
+        return {
+          ...allBoards,
+          [source.droppableId]: sourceBoard,
+        };
+      });
+    } else if (destination.droppableId !== source.droppableId) {
       // cross board movement
       setToDos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
@@ -66,6 +83,9 @@ const App = () => {
             <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
           ))}
         </Boards>
+        <DeleteSection>
+          <Board boardId="delete" toDos={[]} />
+        </DeleteSection>
       </Wrapper>
     </DragDropContext>
   );
