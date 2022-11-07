@@ -1,30 +1,46 @@
 import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
 
-const { persistAtom } = recoilPersist();
-
-export interface ITodo {
+export interface IToDo {
   id: number;
   text: string;
 }
 
-export interface IToDoState {
-  // consider scalability
-  [key: string]: ITodo[];
+export interface IBoard {
+  id: number;
+  title: string;
+  toDos: IToDo[];
 }
 
-export const toDoState = atom<IToDoState>({
+export const toDoState = atom<IBoard[]>({
   key: "toDo",
-  default: {
-    "To Do": [],
-    Doing: [],
-    Done: [],
-  },
-  effects_UNSTABLE: [persistAtom],
+  default: [
+    {
+      title: "해야 함",
+      id: 0,
+      toDos: [
+        { text: "투두리스트 클론 끝내기", id: 0 },
+        { text: "내일 학교 갈 준비하기", id: 1 },
+      ],
+    },
+    {
+      title: "하는 중",
+      id: 1,
+      toDos: [],
+    },
+    {
+      title: "완료",
+      id: 2,
+      toDos: [
+        { text: "하루 4끼 먹기", id: 2 },
+        { text: "공부하기", id: 3 },
+      ],
+    },
+  ],
 });
 
-export const BoardState = atom<string[]>({
-  key: "boards",
-  default: ["To Do", "Doing", "Done"],
-  effects_UNSTABLE: [persistAtom],
+export const isLightState = atom<boolean>({
+  key: "isLight",
+  default: window.matchMedia("(prefers-color-scheme: light)").matches
+    ? true
+    : false,
 });
