@@ -11,8 +11,8 @@ export interface IBoard {
   toDos: IToDo[];
 }
 
-export const toDoState = atom<IBoard[]>({
-  key: "toDo",
+export const toDosState = atom<IBoard[]>({
+  key: "toDos",
   default: [
     {
       title: "해야 함",
@@ -36,6 +36,7 @@ export const toDoState = atom<IBoard[]>({
       ],
     },
   ],
+  // 로컬스토리지 저장 로직 추가 예정 effects: [localStorageEffect('trello-clone-todos')]
 });
 
 export const isLightState = atom<boolean>({

@@ -1,93 +1,268 @@
-import React from "react";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import styled from "styled-components";
+import React, { useEffect } from "react";
+import { GlobalStyle } from ".";
+import { darkTheme, lightTheme } from "./theme";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+  DraggingStyle,
+  NotDraggingStyle,
+} from "react-beautiful-dnd";
+import styled, { ThemeProvider } from "styled-components";
 import { useRecoilState } from "recoil";
-import { toDoState } from "./atom";
-import Board from "./components/Board";
+import { isLightState, toDosState } from "./atom";
+import Board, { MaterialIcon } from "./components/Board";
 
-const Wrapper = styled.div`
+const Trash = styled.div`
   display: flex;
-  flex-direction: column;
-  max-width: 1000px;
-  width: 100%;
-  margin: 0 auto;
-  gap: 30px;
+  align-itmes: center;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  position: fixed;
+  top: -3.75rem;
+  left: calc(50vw - 3.75rem);
+  width: 7.5rem;
+  height: 3.75rem;
+  border-radius: 0 0 100rem 100rem;
+  background-color: tomato;
+  box-shadow: -0.1rem 0 0.4rem rgb(210 77 77 / 15%);
+  font-size: 2.5rem;
+  z-index: 5;
+  transition: transform 0.3s;
+  & > div {
+    margin-bottom: 0.5rem;
+    color: rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const Boards = styled.div`
-  display: grid;
-  width: 100%;
-  gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: calc(100vw - 4rem);
+  margin-right: 2rem;
+  height: calc(100vh - 10rem);
+  margin-top: 7rem;
+  margin-left: 2rem;
 `;
 
-const DeleteSection = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
+const Title = styled.h1`
+  font-size: 2rem;
+  font-weight: 600;
+  transition: color 0.3s;
 `;
+const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: color 0.3s;
+  color: ${(props) => props.theme.secondaryTextColor};
+`;
+
+const Button = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  transition: color 0.3s;
+  padding: 0;
+  border-radius: 0.2rem;
+
+  &:hover,
+  &:focus {
+    cursor: pointer;
+    color: ${(props) => props.theme.accentColor};
+  }
+  &:focus {
+    outline: 0.15rem solid ${(props) => props.theme.accentColor};
+  }
+`;
+
+function getStyle(style: DraggingStyle | NotDraggingStyle) {
+  if (style?.transform) {
+    const axisLockX = `${style.transform.split(",").shift()}, 0px)`;
+    return {
+      ...style,
+      transform: axisLockX,
+    };
+  }
+  return style;
+}
 
 const App = () => {
-  const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = (info: DropResult) => {
-    console.log(info);
-    const { destination, source } = info;
-    if (!destination) return;
-    if (destination?.droppableId === source.droppableId) {
-      // same board movement
-      setToDos((oldToDos) => {
-        const boardCopy = [...oldToDos[source.droppableId]];
-        const taskObj = boardCopy[source.index];
-        boardCopy.splice(source.index, 1);
-        boardCopy.splice(destination?.index, 0, taskObj);
-        return {
-          ...oldToDos,
-          [source.droppableId]: boardCopy,
-        };
+  const [isLight, setIsLight] = useRecoilState(isLightState);
+  const toggleTheme = () => setIsLight((curr) => !curr);
+  useEffect(() => {
+    window // user 설정 테마에 맞춰 페이지 테마 동기화
+      .matchMedia("(prefers-color-scheme: light)")
+      .addEventListener("change", (e) => {
+        console.log(e);
+        setIsLight(e.matches);
       });
-    }
-    if (destination.droppableId === "delete") {
-      // cross board movement
-      setToDos((allBoards) => {
-        const sourceBoard = [...allBoards[source.droppableId]];
-        sourceBoard.splice(source.index, 1);
-        return {
-          ...allBoards,
-          [source.droppableId]: sourceBoard,
-        };
-      });
-    } else if (destination.droppableId !== source.droppableId) {
-      // cross board movement
-      setToDos((allBoards) => {
-        const sourceBoard = [...allBoards[source.droppableId]];
-        const taskObj = sourceBoard[source.index];
-        const destinationBoard = [...allBoards[destination.droppableId]];
-        sourceBoard.splice(source.index, 1);
-        destinationBoard.splice(destination?.index, 0, taskObj);
-        return {
-          ...allBoards,
-          [source.droppableId]: sourceBoard,
-          [destination.droppableId]: destinationBoard,
-        };
+  });
+
+  const [toDos, setToDos] = useRecoilState(toDosState);
+
+  const onAdd = () => {
+    const title = window.prompt("새 보드의 이름을 입력해주세요.")?.trim();
+    if (title !== null && title !== undefined) {
+      if (title === "") {
+        alert("이름을 입력해주세요.");
+        return;
+      }
+      setToDos((prev) => {
+        return [...prev, { title, id: Date.now(), toDos: [] }];
       });
     }
   };
+
+  const onDragEnd = ({ draggableId, source, destination }: DropResult) => {
+    if (source.droppableId === "boards") {
+      if (!destination) return;
+
+      if (source.index === destination.index) return;
+      // 보드 순서 변경
+      if (source.index !== destination.index) {
+        setToDos((prev) => {
+          const toDosCopy = [...prev];
+          const prevBoard = toDosCopy[source.index];
+
+          toDosCopy.splice(source.index, 1);
+          toDosCopy.splice(destination.index, 0, prevBoard);
+
+          return toDosCopy;
+        });
+      }
+    } else if (source.droppableId !== "boards") {
+      if (!destination) return;
+
+      // 태스크 삭제
+      if (destination.droppableId === "trash") {
+        setToDos((prev) => {
+          const toDosCopy = [...prev];
+          const boardIndex = toDosCopy.findIndex(
+            (board) => board.id + "" === source.droppableId.split("-")[1]
+          );
+          const boardCopy = { ...toDosCopy[boardIndex] };
+          const listCopy = [...boardCopy.toDos];
+
+          listCopy.splice(source.index, 1);
+          boardCopy.toDos = listCopy;
+          toDosCopy.splice(boardIndex, 1, boardCopy);
+
+          return toDosCopy;
+        });
+        return;
+      }
+
+      // 태스크 순서 변경(보드 내)
+      if (source.droppableId === destination.droppableId) {
+        setToDos((prev) => {
+          const toDosCopy = [...prev];
+          const boardIndex = toDosCopy.findIndex(
+            (board) => board.id + "" === source.droppableId.split("-")[1]
+          );
+          const boardCopy = { ...toDosCopy[boardIndex] };
+          const listCopy = [...boardCopy.toDos];
+          const prevToDo = boardCopy.toDos[source.index];
+
+          listCopy.splice(source.index, 1);
+          listCopy.splice(destination.index, 0, prevToDo);
+
+          boardCopy.toDos = listCopy;
+          toDosCopy.splice(boardIndex, 1, boardCopy);
+
+          return toDosCopy;
+        });
+      }
+
+      // 태스크 순서 변경(보드 간)
+      if (source.droppableId !== destination.droppableId) {
+        setToDos((prev) => {
+          const toDosCopy = [...prev];
+
+          const sourceBoardIndex = toDosCopy.findIndex(
+            (board) => board.id + "" === source.droppableId.split("-")[1]
+          );
+          const destinationBoardIndex = toDosCopy.findIndex(
+            (board) => board.id + "" === destination.droppableId.split("-")[1]
+          );
+
+          const sourceBoardCopy = { ...toDosCopy[sourceBoardIndex] };
+          const destinationBoardCopy = { ...toDosCopy[destinationBoardIndex] };
+
+          const sourceListCopy = [...sourceBoardCopy.toDos];
+          const destinationListCopy = [...destinationBoardCopy.toDos];
+
+          const prevToDo = sourceBoardCopy.toDos[source.index];
+
+          sourceListCopy.splice(source.index, 1);
+          destinationListCopy.splice(destination.index, 0, prevToDo);
+
+          sourceBoardCopy.toDos = sourceListCopy;
+          destinationBoardCopy.toDos = destinationListCopy;
+
+          toDosCopy.splice(sourceBoardIndex, 1, sourceBoardCopy);
+          toDosCopy.splice(destinationBoardIndex, 1, destinationBoardCopy);
+
+          return toDosCopy;
+        });
+      }
+    }
+  };
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Wrapper>
-        <Boards>
-          {Object.keys(toDos).map((boardId) => (
-            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
-          ))}
-        </Boards>
-        <DeleteSection>
-          <Board boardId="delete" toDos={[]} />
-        </DeleteSection>
-      </Wrapper>
-    </DragDropContext>
+    <ThemeProvider theme={isLight ? lightTheme : darkTheme}>
+      <GlobalStyle />
+      {/* <Navigation>
+				<Title>할 일</Title>
+				<Buttons>
+					<Button onClick={onAdd}>
+						<MaterialIcon name="library_add" />
+					</Button>
+					<Button onClick={toggleTheme}>
+						<MaterialIcon name={isLight ? "dark_mode" : "light_mode"} />
+					</Button>
+				</Buttons>
+			</Navigation> */}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable type="BOARDS" direction="horizontal" droppableId="boards">
+          {(provided, snapshot) => (
+            <Boards ref={provided.innerRef} {...provided.droppableProps}>
+              {toDos.map((board, index) => (
+                <Draggable
+                  draggableId={"board-" + board.id}
+                  key={board.id}
+                  index={index}
+                >
+                  {(provided, snapshot) => (
+                    <Board
+                      board={board}
+                      parentProvided={provided}
+                      isHovering={snapshot.isDragging}
+                      style={getStyle(provided.draggableProps.style!)}
+                    />
+                  )}
+                </Draggable>
+              ))}
+            </Boards>
+          )}
+        </Droppable>
+        <Droppable droppableId="trash" type="BOARD">
+          {(provided, snapshot) => (
+            <div>
+              <Trash ref={provided.innerRef} {...provided.droppableProps}>
+                <MaterialIcon name="delete" />
+              </Trash>
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </ThemeProvider>
   );
 };
 
