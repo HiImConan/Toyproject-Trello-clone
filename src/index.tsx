@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
 import App from "./App";
+import { Trash } from "./App";
 
 import { createGlobalStyle } from "styled-components";
 
@@ -72,6 +73,13 @@ a {
 input, button {
   font-family: "Pretendard", sans-serif;
   color: inherit;
+}
+// draggableCard dragging시 삭제버튼 display
+&:has(.dragging) ${Trash} {
+  transform: translateY(3.75rem);
+}
+&:has(.dragging-over-trash) ${Trash} {
+  transform: translateY(3.75rem) scale(1.2);
 }
 `;
 
