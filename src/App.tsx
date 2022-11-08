@@ -14,7 +14,7 @@ import { useRecoilState } from "recoil";
 import { isLightState, toDosState } from "./atom";
 import Board, { MaterialIcon } from "./components/Board";
 
-const Trash = styled.div`
+export const Trash = styled.div`
   display: flex;
   align-itmes: center;
   justify-content: center;
@@ -80,6 +80,16 @@ const Button = styled.button`
   &:focus {
     outline: 0.15rem solid ${(props) => props.theme.accentColor};
   }
+`;
+
+const Navigation = styled.nav`
+  display: flex;
+  position: fixed;
+  padding: 2.5rem 3rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  color: ${(props) => props.theme.textColor};
 `;
 
 function getStyle(style: DraggingStyle | NotDraggingStyle) {
@@ -217,17 +227,17 @@ const App = () => {
   return (
     <ThemeProvider theme={isLight ? lightTheme : darkTheme}>
       <GlobalStyle />
-      {/* <Navigation>
-				<Title>할 일</Title>
-				<Buttons>
-					<Button onClick={onAdd}>
-						<MaterialIcon name="library_add" />
-					</Button>
-					<Button onClick={toggleTheme}>
-						<MaterialIcon name={isLight ? "dark_mode" : "light_mode"} />
-					</Button>
-				</Buttons>
-			</Navigation> */}
+      <Navigation>
+        <Title>할 일</Title>
+        <Buttons>
+          <Button onClick={onAdd}>
+            <MaterialIcon name="library_add" />
+          </Button>
+          <Button onClick={toggleTheme}>
+            <MaterialIcon name={isLight ? "dark_mode" : "light_mode"} />
+          </Button>
+        </Buttons>
+      </Navigation>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable type="BOARDS" direction="horizontal" droppableId="boards">
           {(provided, snapshot) => (
