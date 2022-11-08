@@ -71,8 +71,8 @@ export const toDosState = atom<IBoard[]>({
       title: "해야 함",
       id: 0,
       toDos: [
-        { text: "투두리스트 클론 끝내기", id: 0 },
-        { text: "내일 학교 갈 준비하기", id: 1 },
+        { text: "학교 갈 준비", id: 0 },
+        { text: "점심먹기", id: 1 },
       ],
     },
     {
@@ -84,8 +84,10 @@ export const toDosState = atom<IBoard[]>({
       title: "완료",
       id: 2,
       toDos: [
-        { text: "하루 4끼 먹기", id: 2 },
-        { text: "공부하기", id: 3 },
+        { text: "당신의 할 일들을", id: 2 },
+        { text: "자유롭게 적어보세요.", id: 3 },
+        { text: "드래그해서 옮길 수도 있답니다~", id: 4 },
+        { text: "(모바일 최적화는 안돼있음)", id: 5 },
       ],
     },
   ],
