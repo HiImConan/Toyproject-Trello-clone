@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# 트렐로 투두리스트 클론 토이프로젝트
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 기술 스택
 
-## Available Scripts
+### 언어 / 프레임워크
 
-In the project directory, you can run:
+- Typescript
+- React.js
 
-### `npm start`
+### 상태 관리 / API 호출
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Recoil
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 스타일링
 
-### `npm test`
+- Styled-Components
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 포맷팅 / 배포
 
-### `npm run build`
+- ESLint
+- Prettier
+- Vercel
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 프로젝트 환경 셋업하기
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```Bash
+git clone https://github.com/HiImConan/Likelion_HUFS_10th/edit/main/react-masterclass.git
+cd react-masterclass
+yarn
+yarn start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 해당 프로젝트를 통해 공부한 것들
 
-### `npm run eject`
+### JavaScript
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- [window.matchMedia](https://blog.eunsukim.me/posts/how-to-use-media-query-with-javascript-matchmedia)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### TypeScript
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- [`is`, `as`](https://velog.io/@kwak1539/%ED%83%80%EC%9E%85%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-is-as-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%A6%AC)
+- [keyof / typeof](https://inpa.tistory.com/889)
+- [JSX.IntrinsicElements](https://uxicode.tistory.com/entry/JSXIntrinsicElements-%EC%9D%B4%EB%9E%80)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### CSS
 
-## Learn More
+- [has selector](https://mong-blog.tistory.com/entry/CSS-has-%EC%84%A0%ED%83%9D%EC%9E%90)
+- [pointer-events props](https://webdir.tistory.com/506)
+- [backdrop-filter](https://shynaunum.tistory.com/38)
+- [:placeholder-shown](https://velog.io/@ees238/CSS-%EA%B0%80%EC%83%81%ED%81%B4%EB%9E%98%EC%8A%A4-placeholder-shown)
+- [!important](https://www.codingfactory.net/10372)
+- [background-clip: padding-box;](https://www.codingfactory.net/10582)
+- [user-select: none;](https://webisfree.com/2018-10-31/css-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%84%A0%ED%83%9D-%EB%93%9C%EB%9E%98%EA%B7%B8-%EC%84%A4%EC%A0%95-user-select-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Recoil
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- atom effect - localStorage 저장 로직
+  - [Recoil Docs: 로컬 스토리지 지속성](https://recoiljs.org/ko/docs/guides/atom-effects/#local-storage-persistence-%EB%A1%9C%EC%BB%AC-%EC%8A%A4%ED%86%A0%EB%A6%AC%EC%A7%80-%EC%A7%80%EC%86%8D%EC%84%B1)
+  - [Recoil with Storage (feat. effects)](https://tech.osci.kr/2022/07/05/recoil-react-js-state-management/)
