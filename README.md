@@ -57,3 +57,7 @@ yarn start
 - atom effect - localStorage 저장 로직
   - [Recoil Docs: 로컬 스토리지 지속성](https://recoiljs.org/ko/docs/guides/atom-effects/#local-storage-persistence-%EB%A1%9C%EC%BB%AC-%EC%8A%A4%ED%86%A0%EB%A6%AC%EC%A7%80-%EC%A7%80%EC%86%8D%EC%84%B1)
   - [Recoil with Storage (feat. effects)](https://tech.osci.kr/2022/07/05/recoil-react-js-state-management/)
+
+### git
+
+- [git 레파지토리(Repository)의 하위 디렉토리를 다른 레파지토리로 분리하기 (comit 내역 보존)](https://ashortday.tistory.com/58)
